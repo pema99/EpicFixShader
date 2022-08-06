@@ -5,6 +5,8 @@ namespace uTinyRipper.Classes.Shaders
 {
 	public struct ShaderSubProgram : IAssetReadable, IAssetWritable
 	{
+		public Shader parent;
+
 		/// <summary>
 		/// 2019.1 and greater
 		/// </summary>

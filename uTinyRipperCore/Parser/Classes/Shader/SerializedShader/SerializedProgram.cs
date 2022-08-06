@@ -7,8 +7,10 @@ namespace uTinyRipper.Classes.Shaders
 			SubPrograms = reader.ReadAssetArray<SerializedSubProgram>();
 		}
 
+		public static ShaderType shader;
 		public void Export(ShaderWriter writer, ShaderType type)
 		{
+			shader = type;
 			if (SubPrograms.Length == 0)
 			{
 				return;

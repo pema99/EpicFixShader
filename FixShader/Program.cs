@@ -113,19 +113,29 @@ public class Program
 		}
 	}
 
+	// Configure these :)
+	public static readonly string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Strawberry Tumu (6).vrca";
+	public static readonly string outputPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\";
+
 	public void Start()
 	{
-		GameStructure gs = GameStructure.Load(new List<string>() { @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\steben.vrca" });
+		GameStructure gs = GameStructure.Load(new List<string>() { bundlePath });
 		var assets = gs.FileCollection.FetchAssets();
 		var shaders = assets.Where(x => x is Shader).Select(x => (Shader)x).ToList();
 		var container = new SimpleExportContainer();
 		var exporter = new ShaderAssetExporter();
 
+		if (!Directory.Exists(outputPath + @"shaders\"))
+			Directory.CreateDirectory(outputPath + @"shaders\");
+		if (!Directory.Exists(outputPath + @"binaries\"))
+			Directory.CreateDirectory(outputPath + @"binaries\");
+
+		ShaderHLSLccExporter.binaryPath = outputPath + @"binaries\";
 
 		foreach (var shader in shaders)
 		{
 			//shader.Blobs[0].SubPrograms[0].;
-			exporter.Export(container, shader, $@"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\dump\{shader.ValidName.GetHashCode()}.shader");
+			exporter.Export(container, shader, outputPath + $@"shaders\{shader.ValidName.GetHashCode()}.shader");
 			Console.WriteLine(shader.ValidName);
 		}
 	}

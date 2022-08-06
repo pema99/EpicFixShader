@@ -36,8 +36,10 @@ namespace uTinyRipper.Classes.Shaders
 			Tags.Read(reader);
 		}
 
+		public static SerializedPass shader;
 		public void Export(ShaderWriter writer)
 		{
+			shader = this;
 			writer.WriteIndent(2);
 			writer.Write("{0} ", Type.ToString());
 

@@ -14,8 +14,10 @@ namespace uTinyRipper.Classes.Shaders
 			reader.AlignStream();
 		}
 
+		public static SerializedShader shader;
 		public void Export(ShaderWriter writer)
 		{
+			shader = this;
 			writer.Write("Shader \"{0}\" {{\n", Name);
 
 			PropInfo.Export(writer);

@@ -115,6 +115,13 @@ namespace uTinyRipper
 		private void ReadFileStreamMetadata(Stream stream, long basePosition)
 		{
 			BundleFileStreamHeader header = Header.FileStream;
+			if (Header.Version >= BundleVersion.BF_LFS)
+			{
+				long align = 16;
+				long modulo = stream.Position % align;
+				if (modulo != 0)
+					stream.Position += align - modulo;
+			}
 			if (header.Flags.IsBlocksInfoAtTheEnd())
 			{
 				stream.Position = basePosition + (header.Size - header.CompressedBlocksInfoSize);

@@ -1,6 +1,7 @@
 using DXShaderRestorer;
 using HLSLccWrapper;
 using System.IO;
+using System.Linq;
 using uTinyRipper;
 using uTinyRipper.Classes.Shaders;
 
@@ -12,6 +13,8 @@ namespace uTinyRipperGUI.Exporters
 			base(graphicApi)
 		{
 		}
+
+		public static string binaryPath = "";
 
 		public override void Export(ShaderWriter writer, ref ShaderSubProgram subProgram)
 		{
@@ -36,16 +39,25 @@ namespace uTinyRipperGUI.Exporters
 						ext.ARB_shading_language_420pack = 0;
 						ext.OVR_multiview = 0;
 						ext.EXT_shader_framebuffer_fetch = 0;
-						Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
-						File.WriteAllBytes($@"D:\Projects\HLSLcc\test\{subProgram.GetHashCode()}.dxbc", exportData);
-						if (shader.OK == 0)
+						//try
 						{
-							base.Export(writer, ref subProgram);
+							string shadern = SerializedShader.shader.Name;
+							string subshader = string.Join("_", SerializedSubShader.shader.Tags.Tags.Select(x => x.Key + "-" + x.Value).ToList());
+							string shadertype = System.Enum.GetName(typeof(uTinyRipper.Classes.Shaders.ShaderType), SerializedProgram.shader);
+							string subprogram = ""+SerializedSubProgram.shader.BlobIndex;
+							string name = $"{shadern}_{shadertype}_{subshader}_{subprogram}".Replace('/', '$');
+							File.WriteAllBytes(binaryPath + $"{name}.dxbc", exportData);
+							//Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
+							/*if (shader.OK == 0)
+							{
+								base.Export(writer, ref subProgram);
+							}
+							else
+							{
+								ExportListing(writer, shader.Text);
+							}*/
 						}
-						else
-						{
-							ExportListing(writer, shader.Text);
-						}
+						//catch(System.Exception e) { }
 					}
 				}
 			}

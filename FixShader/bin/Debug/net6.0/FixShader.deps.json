@@ -15,6 +15,14 @@
           "FixShader.dll": {}
         }
       },
+      "K4os.Compression.LZ4/1.2.16": {
+        "runtime": {
+          "lib/net5.0/K4os.Compression.LZ4.dll": {
+            "assemblyVersion": "1.2.16.0",
+            "fileVersion": "1.2.16.0"
+          }
+        }
+      },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
       "Microsoft.Win32.Primitives/4.3.0": {
@@ -691,6 +699,7 @@
       },
       "uTinyRipperCore/1.0.0": {
         "dependencies": {
+          "K4os.Compression.LZ4": "1.2.16",
           "NETStandard.Library": "1.6.1"
         },
         "runtime": {
@@ -720,6 +729,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "K4os.Compression.LZ4/1.2.16": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XLNQWNayxeMgd1gv0s6kZywM11kww7rTzu3nPGh8fQNblHGbFt79LC1Sk1/QQ8DIJb2Qfl2p+WlLIOWCSuyi8w==",
+      "path": "k4os.compression.lz4/1.2.16",
+      "hashPath": "k4os.compression.lz4.1.2.16.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "type": "package",

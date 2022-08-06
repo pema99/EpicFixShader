@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "1sN8CqXUu6+mtPzX95D4lv6jfqRd0EAjQXkdpe+o7vun5iZ7qnrqZt1uIHxKrBYwEDxfJtVfDr7B0XIYH70F5Q==",
+  "dgSpecHash": "UayQoKxSHANU9ksmjFuS7pyEtfFiv+2UJbDAbBemMdZQ45Rni8JVGEaoVpHN2QCs8BY7QjiF404ZV/5KIJFoYQ==",
   "success": true,
   "projectFilePath": "D:\\Projects\\UtinyRipper-master\\FixShader\\FixShader.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Pema Malling\\.nuget\\packages\\k4os.compression.lz4\\1.2.16\\k4os.compression.lz4.1.2.16.nupkg.sha512",
     "C:\\Users\\Pema Malling\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\Pema Malling\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\Pema Malling\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",

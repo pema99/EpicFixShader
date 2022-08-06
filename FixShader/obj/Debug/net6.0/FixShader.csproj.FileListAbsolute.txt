@@ -29,3 +29,4 @@ D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipper.exe
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\HLSLccWrapper.dll
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipper.pdb
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipper.exe.config
+D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\K4os.Compression.LZ4.dll
