@@ -202,6 +202,20 @@ namespace uTinyRipper
 			if (Header.FileStream.Flags.IsBlocksInfoAtTheEnd())
 			{
 				stream.Position = basePosition + headerSize;
+				if (Header.Version >= BundleVersion.BF_LFS)
+				{
+					long align = 16;
+					long modulo = stream.Position % align;
+					if (modulo != 0)
+						stream.Position += align - modulo;
+				}
+			}
+			if (Header.FileStream.Flags.AlignSwitchFix())
+			{
+				long align = 16;
+				long modulo = stream.Position % align;
+				if (modulo != 0)
+					stream.Position += align - modulo;
 			}
 
 			using (BundleFileBlockReader blockReader = new BundleFileBlockReader(stream, Metadata.BlocksInfo))

@@ -1,15 +1,10 @@
-D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCmd.deps.json
-D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCmd.runtimeconfig.json
-D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCmd.runtimeconfig.dev.json
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\FixShader.exe
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\FixShader.deps.json
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\FixShader.runtimeconfig.json
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\FixShader.dll
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\ref\FixShader.dll
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\FixShader.pdb
-D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCmd.dll
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCore.dll
-D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCmd.pdb
 D:\Projects\UtinyRipper-master\FixShader\bin\Debug\net6.0\uTinyRipperCore.pdb
 D:\Projects\UtinyRipper-master\FixShader\obj\Debug\net6.0\FixShader.csproj.AssemblyReference.cache
 D:\Projects\UtinyRipper-master\FixShader\obj\Debug\net6.0\FixShader.GeneratedMSBuildEditorConfig.editorconfig

@@ -29,20 +29,43 @@ namespace uTinyRipperGUI.Exporters
 
 		public void Read(BinaryReader reader, Version version)
 		{
-			Unknown1 = reader.ReadByte();
-			Textures = reader.ReadByte();
-			CBs = reader.ReadByte();
-			Samplers = reader.ReadByte();
-			UAVs = reader.ReadByte();
-			if (HasGSInputPrimitive(version))
+			RootSignatureType = reader.ReadByte();
+
+			if (RootSignatureType == 0)
+				return;
+			else if (RootSignatureType == 1) // Shader only
 			{
-				GSInputPrimitive = (DXInputPrimitive)reader.ReadByte();
+				Textures = reader.ReadByte();
+				CBs = reader.ReadByte();
+				Samplers = reader.ReadByte();
+				UAVs = reader.ReadByte();
+				if (HasGSInputPrimitive(version))
+				{
+					GSInputPrimitive = (DXInputPrimitive)reader.ReadByte();
+				}
+			}
+			else if (RootSignatureType == 2)
+			{
+				Textures = reader.ReadByte();
+				CBs = reader.ReadByte();
+				Samplers = reader.ReadByte();
+				UAVs = reader.ReadByte();
+				if (HasGSInputPrimitive(version))
+				{
+					GSInputPrimitive = (DXInputPrimitive)reader.ReadByte();
+				}
+
+				// Padding, 32 bytes
+				for (int i = 0; i < 32; i++)
+				{
+					reader.ReadByte();
+				}
 			}
 		}
 
 		public void Write(BinaryWriter writer, Version version)
 		{
-			writer.Write(Unknown1);
+			writer.Write(RootSignatureType);
 			writer.Write(Textures);
 			writer.Write(CBs);
 			writer.Write(Samplers);
@@ -56,7 +79,7 @@ namespace uTinyRipperGUI.Exporters
 		/// <summary>
 		/// Always 1
 		/// </summary>
-		public byte Unknown1 { get; set; }
+		public byte RootSignatureType { get; set; }
 		public byte Textures { get; set; }
 		public byte CBs { get; set; }
 		public byte Samplers { get; set; }

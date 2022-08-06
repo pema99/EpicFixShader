@@ -47,8 +47,8 @@ namespace uTinyRipperGUI.Exporters
 							string subprogram = ""+SerializedSubProgram.shader.BlobIndex;
 							string name = $"{shadern}_{shadertype}_{subshader}_{subprogram}".Replace('/', '$');
 							File.WriteAllBytes(binaryPath + $"{name}.dxbc", exportData);
-							//Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
-							/*if (shader.OK == 0)
+							/*Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
+							if (shader.OK == 0)
 							{
 								base.Export(writer, ref subProgram);
 							}

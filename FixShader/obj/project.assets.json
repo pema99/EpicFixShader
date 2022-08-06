@@ -1199,19 +1199,6 @@
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
       },
-      "uTinyRipperCmd/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.0",
-        "dependencies": {
-          "uTinyRipperCore": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/uTinyRipperCmd.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/uTinyRipperCmd.dll": {}
-        }
-      },
       "uTinyRipperCore/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.6",
@@ -4470,11 +4457,6 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "uTinyRipperCmd/1.0.0": {
-      "type": "project",
-      "path": "../uTinyRipperConsole/uTinyRipperConsoleNETCore.csproj",
-      "msbuildProject": "../uTinyRipperConsole/uTinyRipperConsoleNETCore.csproj"
-    },
     "uTinyRipperCore/1.0.0": {
       "type": "project",
       "path": "../uTinyRipperCore/uTinyRipperCore.csproj",
@@ -4488,7 +4470,6 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "uTinyRipperCmd >= 1.0.0",
       "uTinyRipperGUI >= 1.0.0"
     ]
   },
@@ -4519,9 +4500,6 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Projects\\UtinyRipper-master\\uTinyRipperConsole\\uTinyRipperConsoleNETCore.csproj": {
-              "projectPath": "D:\\Projects\\UtinyRipper-master\\uTinyRipperConsole\\uTinyRipperConsoleNETCore.csproj"
-            },
             "D:\\Projects\\UtinyRipper-master\\uTinyRipperGUI\\uTinyRipperGUI.csproj": {
               "projectPath": "D:\\Projects\\UtinyRipper-master\\uTinyRipperGUI\\uTinyRipperGUI.csproj"
             }

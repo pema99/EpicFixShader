@@ -1,8 +1,6 @@
 ﻿using uTinyRipper;
 using uTinyRipper.Classes;
-using uTinyRipper.Classes.Shaders;
 using uTinyRipper.Converters;
-using uTinyRipper.Converters.Shaders;
 using uTinyRipper.Layout;
 using uTinyRipper.Project;
 using uTinyRipper.SerializedFiles;
@@ -134,7 +132,6 @@ public class Program
 
 		foreach (var shader in shaders)
 		{
-			//shader.Blobs[0].SubPrograms[0].;
 			exporter.Export(container, shader, outputPath + $@"shaders\{shader.ValidName.GetHashCode()}.shader");
 			Console.WriteLine(shader.ValidName);
 		}
