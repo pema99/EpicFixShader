@@ -1,0 +1,3 @@
+[submodule "HLSLcc"]
+	path = HLSLcc
+	url = https://github.com/pema99/HLSLcc.git
