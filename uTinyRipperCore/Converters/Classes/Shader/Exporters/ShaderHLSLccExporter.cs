@@ -51,16 +51,9 @@ namespace uTinyRipper.Classes.Converters
 
 							string shaderText = HLSLccWrapper.TranslateHLSL(exportData, GLLang.LANG_HLSL);
 
-							// Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
-							// if (shader.OK == 0)
-							// {
-							// 	base.Export(writer, ref subProgram);
-							// }
-							// else
-							{
-								// ExportListing(writer, shader.Text);
-								ExportListing(writer, shaderText);
-							}
+							// TODO(merlin): Handle error
+							base.Export(writer, ref subProgram);
+							ExportListing(writer, shaderText);
 						}
 						//catch(System.Exception e) { }
 					}
