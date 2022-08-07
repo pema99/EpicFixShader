@@ -34,7 +34,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Libraries\x64\hlslcc.dll" />
+    <Content Include="..\HLSLcc\bin\Debug\hlslcc.dll">
+      <Link>Libraries\x64\hlslcc.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

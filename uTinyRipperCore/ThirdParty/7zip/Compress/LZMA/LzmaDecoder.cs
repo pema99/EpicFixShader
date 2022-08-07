@@ -81,7 +81,10 @@ namespace SevenZip.Compression.LZMA
 					do
 					{
 						uint matchBit = (uint)(matchByte >> 7) & 1;
-						matchByte <<= 1;
+						unchecked
+						{
+							matchByte <<= 1;
+						}
 						uint bit = m_Decoders[((1 + matchBit) << 8) + symbol].Decode(rangeDecoder);
 						symbol = (symbol << 1) | bit;
 						if (matchBit != bit)

@@ -1,4 +1,5 @@
 using DXShaderRestorer;
+using System;
 //using HLSLccWrapper;
 using System.IO;
 using System.Linq;
@@ -47,15 +48,19 @@ namespace uTinyRipper.Classes.Converters
 							string subprogram = ""+SerializedSubProgram.shader.BlobIndex;
 							string name = $"{shadern}_{shadertype}_{subshader}_{subprogram}".Replace('/', '$');
 							File.WriteAllBytes(binaryPath + $"{name}.dxbc", exportData);
-							/*Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
-							if (shader.OK == 0)
+
+							string shaderText = HLSLccWrapper.TranslateHLSL(exportData, GLLang.LANG_HLSL);
+
+							// Shader shader = Shader.TranslateFromMem(exportData, WrappedGLLang.LANG_DEFAULT, ext);
+							// if (shader.OK == 0)
+							// {
+							// 	base.Export(writer, ref subProgram);
+							// }
+							// else
 							{
-								base.Export(writer, ref subProgram);
+								// ExportListing(writer, shader.Text);
+								ExportListing(writer, shaderText);
 							}
-							else
-							{
-								ExportListing(writer, shader.Text);
-							}*/
 						}
 						//catch(System.Exception e) { }
 					}
