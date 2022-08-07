@@ -52,7 +52,7 @@ namespace uTinyRipper.Classes.Converters
 							string shaderText = HLSLccWrapper.TranslateHLSL(exportData, GLLang.LANG_HLSL);
 
 							// TODO(merlin): Handle error
-							base.Export(writer, ref subProgram);
+							//base.Export(writer, ref subProgram);
 							ExportListing(writer, shaderText);
 						}
 						//catch(System.Exception e) { }
