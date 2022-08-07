@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
-    <LangVersion>7.2</LangVersion>
+    <TargetFramework>net6.0</TargetFramework>
+	<LangVersion>8.0</LangVersion>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AssemblyName>uTinyRipperCore</AssemblyName>
 	<RootNamespace>uTinyRipper</RootNamespace>
 	<Copyright>Copyright ©  2017</Copyright>
 	<Authors>mafaca</Authors>
 	<Configurations>Debug;Release;Virtual</Configurations>
+	<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -29,7 +30,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
+    <None Remove="Libraries\hlslcc.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Libraries\x64\hlslcc.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

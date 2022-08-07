@@ -3,12 +3,12 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+	<LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\uTinyRipperGUI\uTinyRipperGUI.csproj" />
+    <ProjectReference Include="..\uTinyRipperCore\uTinyRipperCore.csproj" />
   </ItemGroup>
 
 </Project>

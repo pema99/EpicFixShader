@@ -4,8 +4,12 @@ using uTinyRipper.Converters;
 using uTinyRipper.Layout;
 using uTinyRipper.Project;
 using uTinyRipper.SerializedFiles;
-using uTinyRipperGUI.Exporters;
+using uTinyRipper.Classes.Converters;
 using Version = uTinyRipper.Version;
+using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.IO;
 
 public class Program
 {

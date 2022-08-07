@@ -5,5 +5,7 @@ packages/
 
 Bins/
 Test/
+*/bin/
+*/obj/
 
 *.DotSettings.user
