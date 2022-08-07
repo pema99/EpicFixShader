@@ -34,14 +34,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\HLSLcc\bin\Debug\hlslcc.dll">
-      <Link>Libraries\x64\hlslcc.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <Content Include="..\HLSLcc\Debug\hlslcc.dll">
+      <Link>Libraries\x64\hlslcc.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
