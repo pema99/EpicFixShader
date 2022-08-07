@@ -20,7 +20,7 @@ namespace uTinyRipper.Classes.Converters
 			int dataOffset = 0;
 			if (DXDataHeader.HasHeader(m_graphicApi))
 			{
-				dataOffset = DXDataHeader.GetDataOffset(writer.Version, m_graphicApi);
+				dataOffset = DXDataHeader.GetDataOffset(exportData[0], writer.Version, m_graphicApi);
 				uint fourCC = BitConverter.ToUInt32(exportData, dataOffset);
 				if (fourCC != DXBCFourCC)
 				{

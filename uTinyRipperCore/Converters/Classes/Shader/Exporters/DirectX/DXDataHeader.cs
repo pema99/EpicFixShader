@@ -15,11 +15,18 @@ namespace uTinyRipper.Classes.Converters
 		/// </summary>
 		public static bool HasGSInputPrimitive(Version version) => version.IsGreaterEqual(5, 4);
 
-		public static int GetDataOffset(Version version, GPUPlatform graphicApi)
+		public static int GetDataOffset(byte rootSignatureVersion, Version version, GPUPlatform graphicApi)
 		{
 			if (HasHeader(graphicApi))
 			{
-				return HasGSInputPrimitive(version) ? 6 : 5;
+				if (rootSignatureVersion == 2)
+				{
+					return 32 + (HasGSInputPrimitive(version) ? 6 : 5);
+				}
+				else
+				{
+					return HasGSInputPrimitive(version) ? 6 : 5;
+				}
 			}
 			else
 			{
@@ -74,11 +81,17 @@ namespace uTinyRipper.Classes.Converters
 			{
 				writer.Write((byte)GSInputPrimitive);
 			}
+
+			if (RootSignatureType == 2)
+			{
+				// Padding, 32 bytes
+				for (int i = 0; i < 32; i++)
+				{
+					writer.Write((byte)0);
+				}
+			}
 		}
 
-		/// <summary>
-		/// Always 1
-		/// </summary>
 		public byte RootSignatureType { get; set; }
 		public byte Textures { get; set; }
 		public byte CBs { get; set; }
