@@ -109,7 +109,9 @@ namespace uTinyRipper.Classes.Shaders
 		{
 			writer.WriteIndent(3);
 			writer.WriteLine("CGPROGRAM");
-			
+			writer.WriteIndent(3);
+			writer.WriteLine("#include \"UnityCG.cginc\"");
+
 			HashSet<string> localKeywords = new HashSet<string>();
 			HashSet<string> globalKeywords = new HashSet<string>();
 			
