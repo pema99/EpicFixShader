@@ -15,8 +15,6 @@ namespace uTinyRipper.Classes.Converters
 		{
 		}
 
-		public static string binaryPath = "";
-
 		private static readonly Version currentVersion = new Version(2019, 4, 31, VersionType.Final, 1);
 
 		public override void Export(ShaderWriter writer, ref ShaderSubProgram subProgram)
@@ -36,35 +34,25 @@ namespace uTinyRipper.Classes.Converters
 					else
 					{
 						byte[] exportData = DXShaderProgramRestorer.RestoreProgramData(reader, writer.Version, ref subProgram);
-						/*WrappedGlExtensions ext = new WrappedGlExtensions();
-						ext.ARB_explicit_attrib_location = 1;
-						ext.ARB_explicit_uniform_location = 1;
-						ext.ARB_shading_language_420pack = 0;
-						ext.OVR_multiview = 0;
-						ext.EXT_shader_framebuffer_fetch = 0;*/
-						//try
+						/*string shadern = SerializedShader.shader.Name;
+						string subshader = string.Join("_", SerializedSubShader.shader.Tags.Tags.Select(x => x.Key + "-" + x.Value).ToList());
+						string shadertype = System.Enum.GetName(typeof(uTinyRipper.Classes.Shaders.ShaderType), SerializedProgram.shader);
+						string subprogram = "" + SerializedSubProgram.shader.BlobIndex;
+						string name = $"{shadern}_{shadertype}_{subshader}_{subprogram}".Replace('/', '$');
+						File.WriteAllBytes(binaryPath + $"{name}.dxbc", exportData);*/
+
+						// TODO(pema): We're skipping tess and geom for now since they are complicated and keep crashing HLSLcc.
+						string shaderText = "// UNSUPPORTED SHADER TYPE!";
+						var type = subProgram.GetProgramType(currentVersion);
+						if (type != ShaderGpuProgramType.DX11GeometrySM40 && type != ShaderGpuProgramType.DX11GeometrySM50 &&
+							type != ShaderGpuProgramType.DX11DomainSM50 && type != ShaderGpuProgramType.DX11HullSM50)
 						{
-							string shadern = SerializedShader.shader.Name;
-							string subshader = string.Join("_", SerializedSubShader.shader.Tags.Tags.Select(x => x.Key + "-" + x.Value).ToList());
-							string shadertype = System.Enum.GetName(typeof(uTinyRipper.Classes.Shaders.ShaderType), SerializedProgram.shader);
-							string subprogram = ""+SerializedSubProgram.shader.BlobIndex;
-							string name = $"{shadern}_{shadertype}_{subshader}_{subprogram}".Replace('/', '$');
-							File.WriteAllBytes(binaryPath + $"{name}.dxbc", exportData);
-
-							// TODO(pema): We're skipping tess and geom for now since they are complicated and keep crashing HLSLcc.
-							string shaderText = "//UNSUPPORTED SHADER TYPE!";
-							var type = subProgram.GetProgramType(currentVersion);
-							if (type != ShaderGpuProgramType.DX11GeometrySM40 && type != ShaderGpuProgramType.DX11GeometrySM50 &&
-								type != ShaderGpuProgramType.DX11DomainSM50 && type != ShaderGpuProgramType.DX11HullSM50)
-							{
-								shaderText = HLSLccWrapper.TranslateHLSL(exportData, GLLang.LANG_HLSL);
-							}
-
-							// TODO(merlin): Handle error
-							//base.Export(writer, ref subProgram);
-							ExportListing(writer, shaderText);
+							shaderText = HLSLccWrapper.TranslateHLSL(exportData, GLLang.LANG_HLSL);
 						}
-						//catch(System.Exception e) { }
+
+						// TODO(merlin): Handle error
+						//base.Export(writer, ref subProgram);
+						ExportListing(writer, shaderText);
 					}
 				}
 			}

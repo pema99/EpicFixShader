@@ -11,137 +11,35 @@ using System;
 using System.Linq;
 using System.IO;
 
-public class Program
+namespace FixShader
 {
-	public static void Main() => new Program().Start();
-
-	public class SimpleExportContainer : IExportContainer
+	public class Program
 	{
-		private Version version;
-		private AssetLayout exportLayout;
-
-		public SimpleExportContainer()
+		public static void Main()
 		{
-			this.version = new Version(2019, 3, 31, VersionType.Final, 1);
-			ExportOptions options = new ExportOptions(version, Platform.NoTarget, TransferInstructionFlags.NoTransferInstructionFlags);
-			exportLayout = new AssetLayout(new LayoutInfo(options.Version, options.Platform, options.Flags));
-		}
+			string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Shader-World-v1-Asset-bund.file_c497e839-81d0-4ff7-8cac-b83344ab3280.41.vrcw";
+			string outPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\shaders\";
 
-		public IExportCollection CurrentCollection => throw new NotImplementedException();
+			if (Directory.Exists(outPath))
+			{
+				foreach (var file in Directory.GetFiles(outPath))
+				{
+					File.Delete(file);
+				}
+			}
+			else
+			{
+				Directory.CreateDirectory(outPath);
+			}
 
-		public AssetLayout ExportLayout => exportLayout;
-
-		public uTinyRipper.Version ExportVersion => throw new NotImplementedException();
-
-		public Platform ExportPlatform => throw new NotImplementedException();
-
-		public TransferInstructionFlags ExportFlags => throw new NotImplementedException();
-
-		public string Name => throw new NotImplementedException();
-
-		public AssetLayout Layout => throw new NotImplementedException();
-
-		public uTinyRipper.Version Version => version;
-
-		public Platform Platform => throw new NotImplementedException();
-
-		public TransferInstructionFlags Flags => throw new NotImplementedException();
-
-		public IReadOnlyList<FileIdentifier> Dependencies => throw new NotImplementedException();
-
-		public MetaPtr CreateExportPointer(uTinyRipper.Classes.Object asset)
-		{
-			throw new NotImplementedException();
-		}
-
-		public uTinyRipper.Classes.Object FindAsset(int fileIndex, long pathID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public uTinyRipper.Classes.Object FindAsset(ClassIDType classID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public uTinyRipper.Classes.Object FindAsset(ClassIDType classID, string name)
-		{
-			throw new NotImplementedException();
-		}
-
-		public uTinyRipper.Classes.Object GetAsset(long pathID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public uTinyRipper.Classes.Object GetAsset(int fileIndex, long pathID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public ClassIDType GetAssetType(long pathID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public long GetExportID(uTinyRipper.Classes.Object asset)
-		{
-			return ExportCollection.GetMainExportID(asset);
-		}
-
-		public bool IsSceneDuplicate(int sceneID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public string SceneIndexToName(int sceneID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public string TagIDToName(int tagID)
-		{
-			throw new NotImplementedException();
-		}
-
-		public ushort TagNameToID(string tagName)
-		{
-			throw new NotImplementedException();
-		}
-
-		public AssetType ToExportType(ClassIDType classID)
-		{
-			throw new NotImplementedException();
-		}
-	}
-
-	// Configure these :)
-	public static readonly string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Shader-World-v1-Asset-bund.file_c497e839-81d0-4ff7-8cac-b83344ab3280.41.vrcw";
-	public static readonly string outputPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\";
-
-	public void Start()
-	{
-		GameStructure gs = GameStructure.Load(new List<string>() { bundlePath });
-		var assets = gs.FileCollection.FetchAssets();
-		var shaders = assets.Where(x => x is Shader).Select(x => (Shader)x).ToList();
-		var container = new SimpleExportContainer();
-		var exporter = new ShaderAssetExporter();
-
-		if (!Directory.Exists(outputPath + @"shaders\"))
-			Directory.CreateDirectory(outputPath + @"shaders\");
-		if (!Directory.Exists(outputPath + @"binaries\"))
-			Directory.CreateDirectory(outputPath + @"binaries\");
-
-		ShaderHLSLccExporter.binaryPath = outputPath + @"binaries\";
-
-		int i = 0;
-		foreach (var shader in shaders)
-		{
-			if (shader.ValidName == "Standard" || shader.ValidName.StartsWith("Hidden/") || shader.ValidName.StartsWith("Legacy Shaders/"))
-				continue;
-
-			exporter.Export(container, shader, outputPath + $@"shaders\{shader.ValidName.Replace("\\", "_").Replace("/", "_")}.shader");
-			//Console.WriteLine($"Processed {i++}/{shaders.Count} shaders");
+			// Step 1: Export shaders to .shader files
+			SimpleShaderExporter.ExportShaders(bundlePath, outPath, shader =>
+			{
+				if (shader.ValidName.StartsWith("Legacy Shaders/")) return false;
+				if (shader.ValidName.StartsWith("Hidden/")) return false;
+				if (shader.ValidName == "Standard") return false;
+				return true;
+			});
 		}
 	}
 }

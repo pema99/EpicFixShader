@@ -9,10 +9,8 @@ namespace uTinyRipper.Classes.Shaders
 			LOD = reader.ReadInt32();
 		}
 
-		public static SerializedSubShader shader;
 		public void Export(ShaderWriter writer)
 		{
-			shader = this;
 			writer.WriteIndent(1);
 			writer.Write("SubShader {\n");
 			if(LOD != 0)

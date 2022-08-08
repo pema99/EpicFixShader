@@ -70,10 +70,8 @@ namespace uTinyRipper.Classes.Shaders
 			}
 		}
 
-		public static SerializedSubProgram shader;
 		public void Export(ShaderWriter writer, ShaderType type, bool isTier)
 		{
-			shader = this;
 			// writer.WriteIndent(4);
 #warning TODO: convertion (DX to HLSL)
 			ShaderGpuProgramType programType = GetProgramType(writer.Version);
