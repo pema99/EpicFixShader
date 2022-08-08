@@ -25,7 +25,7 @@ namespace FixShader
 			{
 				if (filter(shader))
 				{
-					if (exporter.Export(container, shader, outPath + $"{shader.ValidName.Replace("\\", "_").Replace("/", "_")}.shader"))
+					if (exporter.Export(container, shader, outPath + EscapedShaderName(shader) + ".shader"))
 					{
 						exported.Add(shader);
 					}
@@ -33,6 +33,11 @@ namespace FixShader
 			}
 
 			return exported;
+		}
+
+		public static string EscapedShaderName(Shader shader)
+		{
+			return shader.ValidName.Replace("\\", "_").Replace("/", "_");
 		}
 	}
 }

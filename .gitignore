@@ -9,3 +9,10 @@ Test/
 */obj/
 
 *.DotSettings.user
+
+ShaderBundleBuilder/Library/
+ShaderBundleBuilder/Logs/
+ShaderBundleBuilder/obj/
+ShaderBundleBuilder/*.csproj
+ShaderBundleBuilder/*.sln
+ShaderBundleBuilder/.vscode/
