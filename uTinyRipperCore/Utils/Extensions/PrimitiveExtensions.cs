@@ -1,7 +1,14 @@
-﻿namespace uTinyRipper
+﻿using System.Globalization;
+
+namespace uTinyRipper
 {
 	public static class PrimitiveExtensions
 	{
+		public static string ToStringNoScientific(this float f)
+		{
+			return f.ToString("f99", CultureInfo.InvariantCulture).TrimEnd('0');
+		}
+
 		public static int ParseDigit(this char _this)
 		{
 			return _this - '0';

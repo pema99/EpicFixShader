@@ -69,8 +69,8 @@ namespace uTinyRipper.Classes.Shaders
 				case SerializedPropertyType.Range:
 					writer.Write("{0}({1}, {2})",
 						nameof(SerializedPropertyType.Range),
-						DefValue1.ToString(CultureInfo.InvariantCulture),
-						DefValue2.ToString(CultureInfo.InvariantCulture));
+						DefValue1.ToStringNoScientific(),
+						DefValue2.ToStringNoScientific());
 					break;
 
 				case SerializedPropertyType._2D:
@@ -112,16 +112,16 @@ namespace uTinyRipper.Classes.Shaders
 				case SerializedPropertyType.Color:
 				case SerializedPropertyType.Vector:
 					writer.Write("({0},{1},{2},{3})",
-						DefValue0.ToString(CultureInfo.InvariantCulture),
-						DefValue1.ToString(CultureInfo.InvariantCulture),
-						DefValue2.ToString(CultureInfo.InvariantCulture),
-						DefValue3.ToString(CultureInfo.InvariantCulture));
+						DefValue0.ToStringNoScientific(),
+						DefValue1.ToStringNoScientific(),
+						DefValue2.ToStringNoScientific(),
+						DefValue3.ToStringNoScientific());
 					break;
 
 				case SerializedPropertyType.Int:
 				//case SerializedPropertyType.Float:
 				case SerializedPropertyType.Range:
-					writer.Write(DefValue0.ToString(CultureInfo.InvariantCulture));
+					writer.Write(DefValue0.ToStringNoScientific());
 					break;
 
 				case SerializedPropertyType._2D:
