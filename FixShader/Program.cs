@@ -116,7 +116,7 @@ public class Program
 	}
 
 	// Configure these :)
-	public static readonly string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Strawberry Tumu (6).vrca";
+	public static readonly string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Shader-World-v1-Asset-bund.file_c497e839-81d0-4ff7-8cac-b83344ab3280.41.vrcw";
 	public static readonly string outputPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\";
 
 	public void Start()
@@ -134,10 +134,14 @@ public class Program
 
 		ShaderHLSLccExporter.binaryPath = outputPath + @"binaries\";
 
+		int i = 0;
 		foreach (var shader in shaders)
 		{
-			exporter.Export(container, shader, outputPath + $@"shaders\{shader.ValidName.GetHashCode()}.shader");
-			Console.WriteLine(shader.ValidName);
+			if (shader.ValidName == "Standard" || shader.ValidName.StartsWith("Hidden/") || shader.ValidName.StartsWith("Legacy Shaders/"))
+				continue;
+
+			exporter.Export(container, shader, outputPath + $@"shaders\{shader.ValidName.Replace("\\", "_").Replace("/", "_")}.shader");
+			//Console.WriteLine($"Processed {i++}/{shaders.Count} shaders");
 		}
 	}
 }
