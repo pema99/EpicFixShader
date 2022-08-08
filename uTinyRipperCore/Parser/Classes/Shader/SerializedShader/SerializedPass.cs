@@ -109,10 +109,6 @@ namespace uTinyRipper.Classes.Shaders
 		{
 			writer.WriteIndent(3);
 			writer.WriteLine("CGPROGRAM");
-			writer.WriteIndent(3);
-			writer.WriteLine("#pragma vertex vert");
-			writer.WriteIndent(3);
-			writer.WriteLine("#pragma fragment frag");
 			
 			HashSet<string> localKeywords = new HashSet<string>();
 			HashSet<string> globalKeywords = new HashSet<string>();
