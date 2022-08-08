@@ -9,9 +9,9 @@ namespace FixShader
 {
 	internal static class SimpleShaderExporter
 	{
-		public static void ExportShaders(string bundlePath, string outPath) => ExportShaders(bundlePath, outPath, (_) => true);
+		public static List<Shader> ExportShaders(string bundlePath, string outPath) => ExportShaders(bundlePath, outPath, (_) => true);
 
-		public static void ExportShaders(string bundlePath, string outPath, Func<Shader, bool> filter)
+		public static List<Shader> ExportShaders(string bundlePath, string outPath, Func<Shader, bool> filter)
 		{
 			GameStructure gs = GameStructure.Load(new List<string>() { bundlePath });
 			var assets = gs.FileCollection.FetchAssets();
@@ -19,11 +19,20 @@ namespace FixShader
 			var container = new SimpleExportContainer();
 			var exporter = new ShaderAssetExporter();
 
+			var exported = new List<Shader>();
+
 			foreach (var shader in shaders)
 			{
 				if (filter(shader))
-					exporter.Export(container, shader, outPath + $"{shader.ValidName.Replace("\\", "_").Replace("/", "_")}.shader");
+				{
+					if (exporter.Export(container, shader, outPath + $"{shader.ValidName.Replace("\\", "_").Replace("/", "_")}.shader"))
+					{
+						exported.Add(shader);
+					}
+				}
 			}
+
+			return exported;
 		}
 	}
 }
