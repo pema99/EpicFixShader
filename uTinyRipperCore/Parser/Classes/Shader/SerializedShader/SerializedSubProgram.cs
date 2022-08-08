@@ -84,7 +84,7 @@ namespace uTinyRipper.Classes.Shaders
 			// 	writer.Write("hw_tier{0} ", ShaderHardwareTier.ToString("00"));
 			// }
 			// writer.Write("\" {\n");
-			writer.WriteIndent(5);
+			writer.WriteIndent(3);
 
 			int platformIndex = writer.Shader.Platforms.IndexOf(graphicApi);
 			writer.Shader.Blobs[platformIndex].SubPrograms[BlobIndex].Export(writer, type);
