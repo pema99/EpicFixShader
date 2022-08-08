@@ -33,7 +33,7 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Strawberry Tumu (6).vrca";
+			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Sphere_2.vrca";
 			string outPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\shaders\";
 			string scratchPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\scratch\";
 
@@ -50,7 +50,7 @@ namespace FixShader
 				return true;
 			});
 
-
+			// Step 2: Take note of variants used
 			foreach (var shader in exported)
 			{
 				var variants = new List<string>();
@@ -64,9 +64,9 @@ namespace FixShader
 				File.WriteAllLines(scratchPath + SimpleShaderExporter.EscapedShaderName(shader) + ".variants", variants.Distinct());
 			}
 
-			// Step 2: Build bundle containing just .shader files
+			// Step 3: Build bundle containing just .shader files
 
-			// Step 3: Replace shaders in the original bundle with shaders from built bundle
+			// Step 4: Replace shaders in the original bundle with shaders from built bundle
 
 		}
 	}
