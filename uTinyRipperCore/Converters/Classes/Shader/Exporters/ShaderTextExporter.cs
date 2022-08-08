@@ -83,6 +83,6 @@ namespace uTinyRipper.Converters.Shaders
 			}
 		}
 
-		protected const int ExpectedIndent = 5;
+		protected const int ExpectedIndent = 3;
 	}
 }

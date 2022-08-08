@@ -308,27 +308,29 @@ namespace uTinyRipper.Classes.Shaders
 
 		public void Export(ShaderWriter writer, ShaderType type)
 		{
-			if (GlobalKeywords.Length > 0)
-			{
-				writer.Write("Keywords { ");
-				foreach (string keyword in GlobalKeywords)
-				{
-					writer.Write("\"{0}\" ", keyword);
-				}
-				if (HasLocalKeywords(writer.Version))
-				{
-					foreach (string keyword in LocalKeywords)
-					{
-						writer.Write("\"{0}\" ", keyword);
-					}
-				}
-				writer.Write("}\n");
-				writer.WriteIndent(5);
-			}
+			// if (GlobalKeywords.Length > 0)
+			// {
+			// 	writer.Write("Keywords { ");
+			// 	foreach (string keyword in GlobalKeywords)
+			// 	{
+			// 		writer.Write("\"{0}\" ", keyword);
+			// 	}
+			// 	if (HasLocalKeywords(writer.Version))
+			// 	{
+			// 		foreach (string keyword in LocalKeywords)
+			// 		{
+			// 			writer.Write("\"{0}\" ", keyword);
+			// 		}
+			// 	}
+			// 	writer.Write("}\n");
+			// 	writer.WriteIndent(3);
+			// }
 
 #warning TODO: convertion (DX to HLSL)
+			// writer.Write("}\n");
 			ShaderGpuProgramType programType = GetProgramType(writer.Version);
-			writer.Write("\"{0}", programType.ToProgramDataKeyword(writer.Platform, type));
+			// writer.Write("\"{0}", programType.ToProgramDataKeyword(writer.Platform, type));
+			writer.Write(GetShaderModelPragma(programType));
 			if (ProgramData.Length > 0)
 			{
 				writer.Write("\n");
@@ -336,7 +338,26 @@ namespace uTinyRipper.Classes.Shaders
 
 				writer.WriteShaderData(ref this);
 			}
-			writer.Write('"');
+			// writer.Write('"');
+		}
+
+		private static string GetShaderModelPragma(ShaderGpuProgramType type)
+		{
+			switch (type)
+			{
+				case ShaderGpuProgramType.DX11PixelSM50:
+				case ShaderGpuProgramType.DX11VertexSM50:
+				case ShaderGpuProgramType.DX11GeometrySM50:
+				case ShaderGpuProgramType.DX11DomainSM50:
+				case ShaderGpuProgramType.DX11HullSM50:
+					return "#pragma target 5.0";
+				case ShaderGpuProgramType.DX11PixelSM40:
+				case ShaderGpuProgramType.DX11VertexSM40:
+				case ShaderGpuProgramType.DX11GeometrySM40:
+					return "#pragma target 4.0";
+			}
+
+			return "";
 		}
 
 		public ShaderGpuProgramType GetProgramType(Version version)

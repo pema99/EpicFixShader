@@ -16,15 +16,15 @@ namespace uTinyRipper.Classes.Shaders
 				return;
 			}
 
-			writer.WriteIndent(3);
-			writer.Write("Program \"{0}\" {{\n", type.ToProgramTypeString());
+			// writer.WriteIndent(3);
+			// writer.Write("Program \"{0}\" {{\n", type.ToProgramTypeString());
 			int tierCount = GetTierCount();
 			for (int i = 0; i < SubPrograms.Length; i++)
 			{
 				SubPrograms[i].Export(writer, type, tierCount > 1);
 			}
-			writer.WriteIndent(3);
-			writer.Write("}\n");
+			// writer.WriteIndent(3);
+			// writer.Write("}\n");
 		}
 
 		private int GetTierCount()

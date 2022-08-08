@@ -108,40 +108,41 @@ namespace uTinyRipper.Classes.Shaders
 				writer.Write("Offset {0}, {1}\n", OffsetFactor.Val, OffsetUnits.Val);
 			}
 
-			if (!StencilRef.IsZero || !StencilReadMask.IsMax || !StencilWriteMask.IsMax || !StencilOp.IsDefault || !StencilOpFront.IsDefault || !StencilOpBack.IsDefault)
-			{
-				writer.WriteIndent(3);
-				writer.Write("Stencil {\n");
-				if(!StencilRef.IsZero)
-				{
-					writer.WriteIndent(4);
-					writer.Write("Ref {0}\n", StencilRef.Val);
-				}
-				if(!StencilReadMask.IsMax)
-				{
-					writer.WriteIndent(4);
-					writer.Write("ReadMask {0}\n", StencilReadMask.Val);
-				}
-				if(!StencilWriteMask.IsMax)
-				{
-					writer.WriteIndent(4);
-					writer.Write("WriteMask {0}\n", StencilWriteMask.Val);
-				}
-				if(!StencilOp.IsDefault)
-				{
-					StencilOp.Export(writer, StencilType.Base);
-				}
-				if(!StencilOpFront.IsDefault)
-				{
-					StencilOpFront.Export(writer, StencilType.Front);
-				}
-				if(!StencilOpBack.IsDefault)
-				{
-					StencilOpBack.Export(writer, StencilType.Back);
-				}
-				writer.WriteIndent(3);
-				writer.Write("}\n");
-			}
+			// todo: need to find how to link these to properties
+			// if (!StencilRef.IsZero || !StencilReadMask.IsMax || !StencilWriteMask.IsMax || !StencilOp.IsDefault || !StencilOpFront.IsDefault || !StencilOpBack.IsDefault)
+			// {
+			// 	writer.WriteIndent(3);
+			// 	writer.Write("Stencil {\n");
+			// 	if(!StencilRef.IsZero)
+			// 	{
+			// 		writer.WriteIndent(4);
+			// 		writer.Write("Ref {0}\n", StencilRef.Val);
+			// 	}
+			// 	if(!StencilReadMask.IsMax)
+			// 	{
+			// 		writer.WriteIndent(4);
+			// 		writer.Write("ReadMask {0}\n", StencilReadMask.Val);
+			// 	}
+			// 	if(!StencilWriteMask.IsMax)
+			// 	{
+			// 		writer.WriteIndent(4);
+			// 		writer.Write("WriteMask {0}\n", StencilWriteMask.Val);
+			// 	}
+			// 	if(!StencilOp.IsDefault)
+			// 	{
+			// 		StencilOp.Export(writer, StencilType.Base);
+			// 	}
+			// 	if(!StencilOpFront.IsDefault)
+			// 	{
+			// 		StencilOpFront.Export(writer, StencilType.Front);
+			// 	}
+			// 	if(!StencilOpBack.IsDefault)
+			// 	{
+			// 		StencilOpBack.Export(writer, StencilType.Back);
+			// 	}
+			// 	writer.WriteIndent(3);
+			// 	writer.Write("}\n");
+			// }
 			
 			if(!FogMode.IsUnknown() || !FogColor.IsZero || !FogDensity.IsZero || !FogStart.IsZero || !FogEnd.IsZero)
 			{
@@ -183,7 +184,8 @@ namespace uTinyRipper.Classes.Shaders
 				writer.Write("Lighting {0}\n", LightingValue);
 			}
 			writer.WriteIndent(3);
-			writer.Write("GpuProgramID {0}\n", GpuProgramID);
+			// Comment it out because it might be useful?
+			writer.Write("// GpuProgramID {0}\n", GpuProgramID);
 		}
 
 		public string Name { get; set; }

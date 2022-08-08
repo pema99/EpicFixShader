@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace uTinyRipper.Classes.Shaders
 {
@@ -62,31 +63,35 @@ namespace uTinyRipper.Classes.Shaders
 				else if (Type == SerializedPassType.Pass)
 				{
 					State.Export(writer);
+					
+					ExportHLSLForCompilation(writer);
+					
+					//
+					// if ((ProgramMask & ShaderType.Vertex.ToProgramMask()) != 0)
+					// {
+					// 	ProgVertex.Export(writer, ShaderType.Vertex);
+					// }
+					// if ((ProgramMask & ShaderType.Fragment.ToProgramMask()) != 0)
+					// {
+					// 	ProgFragment.Export(writer, ShaderType.Fragment);
+					// }
+					// if ((ProgramMask & ShaderType.Geometry.ToProgramMask()) != 0)
+					// {
+					// 	ProgGeometry.Export(writer, ShaderType.Geometry);
+					// }
+					// if ((ProgramMask & ShaderType.Hull.ToProgramMask()) != 0)
+					// {
+					// 	ProgHull.Export(writer, ShaderType.Hull);
+					// }
+					// if ((ProgramMask & ShaderType.Domain.ToProgramMask()) != 0)
+					// {
+					// 	ProgDomain.Export(writer, ShaderType.Domain);
+					// }
+					// if ((ProgramMask & ShaderType.RayTracing.ToProgramMask()) != 0)
+					// {
+					// 	ProgDomain.Export(writer, ShaderType.RayTracing);
+					// }
 
-					if ((ProgramMask & ShaderType.Vertex.ToProgramMask()) != 0)
-					{
-						ProgVertex.Export(writer, ShaderType.Vertex);
-					}
-					if ((ProgramMask & ShaderType.Fragment.ToProgramMask()) != 0)
-					{
-						ProgFragment.Export(writer, ShaderType.Fragment);
-					}
-					if ((ProgramMask & ShaderType.Geometry.ToProgramMask()) != 0)
-					{
-						ProgGeometry.Export(writer, ShaderType.Geometry);
-					}
-					if ((ProgramMask & ShaderType.Hull.ToProgramMask()) != 0)
-					{
-						ProgHull.Export(writer, ShaderType.Hull);
-					}
-					if ((ProgramMask & ShaderType.Domain.ToProgramMask()) != 0)
-					{
-						ProgDomain.Export(writer, ShaderType.Domain);
-					}
-					if ((ProgramMask & ShaderType.RayTracing.ToProgramMask()) != 0)
-					{
-						ProgDomain.Export(writer, ShaderType.RayTracing);
-					}
 
 #warning HasInstancingVariant?
 				}
@@ -98,6 +103,83 @@ namespace uTinyRipper.Classes.Shaders
 				writer.WriteIndent(2);
 				writer.Write("}\n");
 			}
+		}
+
+		private void ExportHLSLForCompilation(ShaderWriter writer)
+		{
+			writer.WriteIndent(3);
+			writer.WriteLine("CGPROGRAM");
+			writer.WriteIndent(3);
+			writer.WriteLine("#pragma vertex vert");
+			writer.WriteIndent(3);
+			writer.WriteLine("#pragma fragment frag");
+			
+			HashSet<string> localKeywords = new HashSet<string>();
+			HashSet<string> globalKeywords = new HashSet<string>();
+			
+			int platformPC = writer.Shader.Platforms.IndexOf(GPUPlatform.d3d11);
+
+			var enumerator = new[] { ProgVertex, ProgFragment, ProgGeometry, ProgHull, ProgDomain }.SelectMany(e => e.SubPrograms);
+			foreach (SerializedSubProgram serializedSubProgram in enumerator)
+			{
+				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[serializedSubProgram.BlobIndex];
+				
+				localKeywords.UnionWith(subProgram.LocalKeywords);
+				globalKeywords.UnionWith(subProgram.GlobalKeywords);
+			}
+
+			foreach (string globalKeyword in globalKeywords)
+			{
+				writer.WriteIndent(3);
+				writer.WriteLine($"#pragma shader_feature {globalKeyword}");
+			}
+			
+			foreach (string localKeyword in localKeywords)
+			{
+				writer.WriteIndent(3);
+				writer.WriteLine($"#pragma shader_feature_local {localKeyword}");
+			}
+
+			HashSet<string> allKeywords = new HashSet<string>(localKeywords);
+			allKeywords.UnionWith(globalKeywords);
+
+			foreach (SerializedSubProgram serializedSubProgram in enumerator)
+			{
+				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[serializedSubProgram.BlobIndex];
+
+				HashSet<string> programKeywords = new HashSet<string>(subProgram.GlobalKeywords);
+				programKeywords.UnionWith(subProgram.GlobalKeywords);
+				
+				HashSet<string> excludedKeywords = new HashSet<string>(allKeywords);
+				excludedKeywords.ExceptWith(subProgram.GlobalKeywords);
+				excludedKeywords.ExceptWith(subProgram.LocalKeywords);
+			
+				writer.WriteIndent(3);
+				writer.Write("#if ");
+				
+				if (programKeywords.Count > 0 && excludedKeywords.Count > 0)
+				{
+					writer.Write($"({string.Join(" && ", programKeywords)}) && !({string.Join(" || ", excludedKeywords)})");
+				}
+				else if (programKeywords.Count > 0)
+				{
+					writer.Write($"({string.Join(" && ", programKeywords)})");
+				}
+				else if (excludedKeywords.Count > 0)
+				{
+					writer.Write($"!({string.Join(" || ", excludedKeywords)})");
+				}
+				
+				writer.WriteLine();
+				
+				serializedSubProgram.Export(writer, ShaderType.None, false);
+				
+				writer.WriteIndent(3);
+				writer.WriteLine("#endif");
+			}
+			
+			writer.WriteIndent(3);
+			writer.WriteLine("ENDCG");
 		}
 
 		public IReadOnlyDictionary<string, int> NameIndices => m_nameIndices;
