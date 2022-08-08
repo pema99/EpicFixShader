@@ -120,8 +120,9 @@ namespace uTinyRipper.Classes.Shaders
 			{
 				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[serializedSubProgram.BlobIndex];
 				
-				localKeywords.UnionWith(subProgram.LocalKeywords);
 				globalKeywords.UnionWith(subProgram.GlobalKeywords);
+				if (subProgram.LocalKeywords != null)
+					localKeywords.UnionWith(subProgram.LocalKeywords);
 			}
 
 			foreach (string globalKeyword in globalKeywords)
@@ -148,7 +149,8 @@ namespace uTinyRipper.Classes.Shaders
 				
 				HashSet<string> excludedKeywords = new HashSet<string>(allKeywords);
 				excludedKeywords.ExceptWith(subProgram.GlobalKeywords);
-				excludedKeywords.ExceptWith(subProgram.LocalKeywords);
+				if (subProgram.LocalKeywords != null)
+					excludedKeywords.ExceptWith(subProgram.LocalKeywords);
 			
 				writer.WriteIndent(3);
 				writer.Write("#if ");
