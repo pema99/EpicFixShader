@@ -33,13 +33,17 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Sphere_2.vrca";
-			string outPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\shaders\";
-			string scratchPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\scratch\";
+			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Strawberry Tumu (6).vrca";
+			string shaderBundlerPath = @"D:\Projects\UtinyRipper-master\ShaderBundleBuilder\";
+			string unityPath = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
+			string outPath = shaderBundlerPath + "Assets/BundledAssets/shaderbundle/";
+			string variantsPath = shaderBundlerPath + "Assets/Variants/";
+
+			//"C:\Program Files\2019.4.31f1\Editor\Unity.exe" -batchmode -projectPath "D:\Projects\UtinyRipper-master\ShaderBundleBuilder" -executeMethod BuildBundle.BuildAllAssetBundles
 
 			// Step 0: Setup up folders
 			CreateAndClearDirectory(outPath);
-			CreateAndClearDirectory(scratchPath);
+			CreateAndClearDirectory(variantsPath);
 
 			// Step 1: Export shaders to .shader files
 			var exported = SimpleShaderExporter.ExportShaders(bundlePath, outPath, shader =>
@@ -61,10 +65,13 @@ namespace FixShader
 					if (variant != "")
 						variants.Add(variant);
 				}
-				File.WriteAllLines(scratchPath + SimpleShaderExporter.EscapedShaderName(shader) + ".variants", variants.Distinct());
+				File.WriteAllLines(variantsPath + SimpleShaderExporter.EscapedShaderName(shader) + ".variants", variants.Distinct());
 			}
 
 			// Step 3: Build bundle containing just .shader files
+			var proc = System.Diagnostics.Process.Start(unityPath,
+				$"-batchmode -projectPath \"{shaderBundlerPath}\" -executeMethod BuildBundle.BuildAllAssetBundles -quit");
+			proc.WaitForExit();
 
 			// Step 4: Replace shaders in the original bundle with shaders from built bundle
 
