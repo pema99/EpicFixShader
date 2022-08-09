@@ -11,6 +11,8 @@ using System;
 using System.Linq;
 using System.IO;
 using uTinyRipper.Classes.Shaders;
+using AssetsTools.NET.Extra;
+using AssetsTools.NET;
 
 namespace FixShader
 {
@@ -33,13 +35,11 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\Strawberry Tumu (6).vrca";
+			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\LowPoly_Kon_PC.vrca";
 			string shaderBundlerPath = @"D:\Projects\UtinyRipper-master\ShaderBundleBuilder\";
 			string unityPath = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
 			string outPath = shaderBundlerPath + "Assets/BundledAssets/shaderbundle/";
 			string variantsPath = shaderBundlerPath + "Assets/Variants/";
-
-			//"C:\Program Files\2019.4.31f1\Editor\Unity.exe" -batchmode -projectPath "D:\Projects\UtinyRipper-master\ShaderBundleBuilder" -executeMethod BuildBundle.BuildAllAssetBundles
 
 			// Step 0: Setup up folders
 			CreateAndClearDirectory(outPath);
@@ -74,7 +74,54 @@ namespace FixShader
 			proc.WaitForExit();
 
 			// Step 4: Replace shaders in the original bundle with shaders from built bundle
+			{
+				var am = new AssetsManager();
 
+				// Get source asset data
+				var bunSrc = am.LoadBundleFile(shaderBundlerPath + "Assets/StreamingAssets/shaderbundle");
+				var assetsSrc = am.LoadAssetsFileFromBundle(bunSrc, 0, false);
+				var shadersSrc = assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader)[0];
+				//var baseFieldSrc = am.GetTypeInstance(assetsSrc, shadersSrc).GetBaseField();
+				//var shaderBytesSrc = baseFieldSrc.WriteToByteArray();
+
+				// Load destination asset bundle, replace
+				var bunDst = am.LoadBundleFile(bundlePath);
+				var assetsDst = am.LoadAssetsFileFromBundle(bunDst, 0, false);
+				//var shadersDst = assetsDst.table.GetAssetsOfType((int)AssetClassID.Shader)[0];
+
+				var replacers = new List<AssetsReplacer>();
+				foreach (var shaderInfoSrc in assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader))
+				{
+					var shaderSrc = am.GetTypeInstance(assetsSrc, shaderInfoSrc).GetBaseField();
+					var nameSrc = shaderSrc.Get("m_ParsedForm").Get("m_Name").GetValue().AsString();
+
+					foreach (var shaderInfoDst in assetsDst.table.GetAssetsOfType((int)AssetClassID.Shader))
+					{
+						var shaderDst = am.GetTypeInstance(assetsDst, shaderInfoDst).GetBaseField();
+						var nameDst = shaderDst.Get("m_ParsedForm").Get("m_Name").GetValue().AsString();
+
+						if (nameSrc == nameDst)
+						{
+							var shaderBytesSrc = shaderSrc.WriteToByteArray();
+							var repl = new AssetsReplacerFromMemory(0, shaderInfoDst.index, (int)shaderInfoDst.curFileType, 0xffff, shaderBytesSrc);
+							replacers.Add(repl);
+						}
+					}
+				}
+
+				byte[] newAssetData;
+				using (var stream = new MemoryStream())
+				using (var writer = new AssetsFileWriter(stream))
+				{
+					assetsDst.file.Write(writer, 0, replacers, 0);
+					newAssetData = stream.ToArray();
+				}
+
+				// Replace primary asset file in destination bundle
+				var bunRepl = new BundleReplacerFromMemory(assetsDst.name, assetsDst.name, true, newAssetData, -1);
+				var bunWriter = new AssetsFileWriter(File.OpenWrite(bundlePath + ".new"));
+				bunDst.file.Write(bunWriter, new List<BundleReplacer>() { bunRepl });
+			}
 		}
 	}
 }

@@ -53,11 +53,10 @@ public class BuildBundle : MonoBehaviour
             }
         }
 
-        string variantsPath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\scratch\";
         var svc = new ShaderVariantCollection();
         foreach (var shader in shaders)
         {
-            string[] variants = File.ReadAllLines(Path.Combine(variantsPath, EscapedShaderName(shader) + ".variants"));
+            string[] variants = File.ReadAllLines(Path.Combine(Application.dataPath, "Variants/", EscapedShaderName(shader) + ".variants"));
             foreach (PassType pt in Enum.GetValues(typeof(PassType)))
             {
                 foreach (var variant in variants)

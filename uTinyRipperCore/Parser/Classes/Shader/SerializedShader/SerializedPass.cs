@@ -153,29 +153,36 @@ namespace uTinyRipper.Classes.Shaders
 				excludedKeywords.ExceptWith(subProgram.GlobalKeywords);
 				if (subProgram.LocalKeywords != null)
 					excludedKeywords.ExceptWith(subProgram.LocalKeywords);
-			
-				writer.WriteIndent(3);
-				writer.Write("#if ");
-				
-				if (programKeywords.Count > 0 && excludedKeywords.Count > 0)
+
+				bool hasVariants = programKeywords.Count > 0 || excludedKeywords.Count > 0;
+				if (hasVariants)
 				{
-					writer.Write($"({string.Join(" && ", programKeywords)}) && !({string.Join(" || ", excludedKeywords)})");
+					writer.WriteIndent(3);
+					writer.Write("#if ");
+
+					if (programKeywords.Count > 0 && excludedKeywords.Count > 0)
+					{
+						writer.Write($"({string.Join(" && ", programKeywords)}) && !({string.Join(" || ", excludedKeywords)})");
+					}
+					else if (programKeywords.Count > 0)
+					{
+						writer.Write($"({string.Join(" && ", programKeywords)})");
+					}
+					else if (excludedKeywords.Count > 0)
+					{
+						writer.Write($"!({string.Join(" || ", excludedKeywords)})");
+					}
+
+					writer.WriteLine();
 				}
-				else if (programKeywords.Count > 0)
-				{
-					writer.Write($"({string.Join(" && ", programKeywords)})");
-				}
-				else if (excludedKeywords.Count > 0)
-				{
-					writer.Write($"!({string.Join(" || ", excludedKeywords)})");
-				}
-				
-				writer.WriteLine();
 				
 				serializedSubProgram.Export(writer, ShaderType.None, false);
-				
-				writer.WriteIndent(3);
-				writer.WriteLine("#endif");
+
+				if (hasVariants)
+				{
+					writer.WriteIndent(3);
+					writer.WriteLine("#endif");
+				}
 			}
 			
 			writer.WriteIndent(3);
