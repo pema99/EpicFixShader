@@ -112,6 +112,10 @@ namespace uTinyRipper.Classes.Shaders
 			writer.WriteIndent(3);
 			writer.WriteLine("#include \"UnityCG.cginc\"");
 
+			// Force instancing keyword to handle cases where it isn't present.
+			// If we don't do this, the asset bundle building step might strip out the variants we need.
+			writer.WriteLine("#pragma shader_feature STEREO_INSTANCING_ON");
+
 			HashSet<string> localKeywords = new HashSet<string>();
 			HashSet<string> globalKeywords = new HashSet<string>();
 			

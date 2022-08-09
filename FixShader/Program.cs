@@ -64,6 +64,14 @@ namespace FixShader
 					string variant = string.Join(",", keywords);
 					if (variant != "")
 						variants.Add(variant);
+
+					// We force the instancing keyword to be present during export, so we need to make
+					// sure to include the new variants created from doing so. This is like adding a new keyword.
+					if (!keywords.Contains("STEREO_INSTANCING_ON"))
+					{
+						var keywordsInstancing = keywords.Union(new string[] { "STEREO_INSTANCING_ON" });
+						variants.Add(string.Join(",", keywordsInstancing));
+					}
 				}
 				File.WriteAllLines(variantsPath + SimpleShaderExporter.EscapedShaderName(shader) + ".variants", variants.Distinct());
 			}
@@ -81,13 +89,10 @@ namespace FixShader
 				var bunSrc = am.LoadBundleFile(shaderBundlerPath + "Assets/StreamingAssets/shaderbundle");
 				var assetsSrc = am.LoadAssetsFileFromBundle(bunSrc, 0, false);
 				var shadersSrc = assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader)[0];
-				//var baseFieldSrc = am.GetTypeInstance(assetsSrc, shadersSrc).GetBaseField();
-				//var shaderBytesSrc = baseFieldSrc.WriteToByteArray();
 
 				// Load destination asset bundle, replace
 				var bunDst = am.LoadBundleFile(bundlePath);
 				var assetsDst = am.LoadAssetsFileFromBundle(bunDst, 0, false);
-				//var shadersDst = assetsDst.table.GetAssetsOfType((int)AssetClassID.Shader)[0];
 
 				var replacers = new List<AssetsReplacer>();
 				foreach (var shaderInfoSrc in assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader))
