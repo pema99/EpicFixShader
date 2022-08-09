@@ -114,6 +114,7 @@ namespace uTinyRipper.Classes.Shaders
 
 			// Force instancing keyword to handle cases where it isn't present.
 			// If we don't do this, the asset bundle building step might strip out the variants we need.
+			writer.WriteIndent(3);
 			writer.WriteLine("#pragma shader_feature STEREO_INSTANCING_ON");
 
 			HashSet<string> localKeywords = new HashSet<string>();
