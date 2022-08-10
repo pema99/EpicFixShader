@@ -154,7 +154,8 @@ namespace uTinyRipper.Classes.Shaders
 				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[targetProgram.BlobIndex];
 
 				HashSet<string> programKeywords = new HashSet<string>(subProgram.GlobalKeywords);
-				programKeywords.UnionWith(subProgram.LocalKeywords);
+				if (subProgram.LocalKeywords != null)
+					programKeywords.UnionWith(subProgram.LocalKeywords);
 				
 				HashSet<string> excludedKeywords = new HashSet<string>(allKeywords);
 				excludedKeywords.ExceptWith(subProgram.GlobalKeywords);
