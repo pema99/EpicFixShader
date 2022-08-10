@@ -35,7 +35,7 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\LowPoly_Kon_PC.vrca";
+			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\LowPoly_Kon_PC (1).vrca";
 			string shaderBundlerPath = @"D:\Projects\UtinyRipper-master\ShaderBundleBuilder\";
 			string unityPath = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
 			string outPath = shaderBundlerPath + "Assets/BundledAssets/shaderbundle/";
@@ -88,7 +88,6 @@ namespace FixShader
 				// Get source asset data
 				var bunSrc = am.LoadBundleFile(shaderBundlerPath + "Assets/StreamingAssets/shaderbundle");
 				var assetsSrc = am.LoadAssetsFileFromBundle(bunSrc, 0, false);
-				var shadersSrc = assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader)[0];
 
 				// Load destination asset bundle, replace
 				var bunDst = am.LoadBundleFile(bundlePath);

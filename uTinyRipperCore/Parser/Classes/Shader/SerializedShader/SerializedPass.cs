@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace uTinyRipper.Classes.Shaders
 {
@@ -149,16 +150,72 @@ namespace uTinyRipper.Classes.Shaders
 
 			foreach (SerializedSubProgram serializedSubProgram in enumerator)
 			{
-				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[serializedSubProgram.BlobIndex];
+				SerializedSubProgram targetProgram = serializedSubProgram;
+				ShaderSubProgram subProgram = writer.Shader.Blobs[platformPC].SubPrograms[targetProgram.BlobIndex];
 
 				HashSet<string> programKeywords = new HashSet<string>(subProgram.GlobalKeywords);
-				programKeywords.UnionWith(subProgram.GlobalKeywords);
+				programKeywords.UnionWith(subProgram.LocalKeywords);
 				
 				HashSet<string> excludedKeywords = new HashSet<string>(allKeywords);
 				excludedKeywords.ExceptWith(subProgram.GlobalKeywords);
 				if (subProgram.LocalKeywords != null)
 					excludedKeywords.ExceptWith(subProgram.LocalKeywords);
 
+				// If this is a stereo instancing pass
+				if (programKeywords.Contains("STEREO_INSTANCING_ON"))
+				{
+					// Check if the program actually does instancing logic
+					bool usesInstanceID = false;
+					if (targetProgram.GpuProgramType == (int)ShaderGpuProgramType.DX11VertexSM40 ||
+						targetProgram.GpuProgramType == (int)ShaderGpuProgramType.DX11VertexSM50)
+					{
+						// If this is a vertex shader, we expect to see an SV_InstanceID
+						usesInstanceID = Encoding.Default.GetString(subProgram.ProgramData).Contains("SV_InstanceID");
+					}
+					else
+					{
+						// If this is not a vertex shader, find the corresponding vertex shader, and check if it uses SV_InstanceID
+						foreach (SerializedSubProgram other in enumerator)
+						{
+							ShaderSubProgram otherProgram = writer.Shader.Blobs[platformPC].SubPrograms[other.BlobIndex];
+
+							HashSet<string> otherKeywords = new HashSet<string>(otherProgram.GlobalKeywords);
+							otherKeywords.UnionWith(otherProgram.LocalKeywords);
+
+							if ((other.GpuProgramType == (int)ShaderGpuProgramType.DX11VertexSM40 ||
+								 other.GpuProgramType == (int)ShaderGpuProgramType.DX11VertexSM50) &&
+								otherKeywords.SetEquals(programKeywords) &&
+								Encoding.Default.GetString(otherProgram.ProgramData).Contains("SV_InstanceID"))
+							{
+								usesInstanceID = true;
+								break;
+							}
+						}
+					}
+
+					// If it doesn't, we want to replace it with an equivalent variant, but with the instancing keyword turned off.
+					if (!usesInstanceID)
+					{
+						HashSet<string> desiredKeywords = new HashSet<string>(programKeywords);
+						desiredKeywords.Remove("STEREO_INSTANCING_ON");
+						foreach (SerializedSubProgram other in enumerator)
+						{
+							ShaderSubProgram otherProgram = writer.Shader.Blobs[platformPC].SubPrograms[other.BlobIndex];
+
+							HashSet<string> otherKeywords = new HashSet<string>(otherProgram.GlobalKeywords);
+							otherKeywords.UnionWith(otherProgram.LocalKeywords);
+
+							// If we find a variant with the desired keyword, that is also the same type, switch to that and carry on.
+							if (otherKeywords.SetEquals(desiredKeywords) && other.GpuProgramType == targetProgram.GpuProgramType)
+							{
+								targetProgram = other;
+								break;
+							}
+						}
+					}
+				}
+
+				// Only put the macro guard if there are any keywords present
 				bool hasVariants = programKeywords.Count > 0 || excludedKeywords.Count > 0;
 				if (hasVariants)
 				{
@@ -180,8 +237,8 @@ namespace uTinyRipper.Classes.Shaders
 
 					writer.WriteLine();
 				}
-				
-				serializedSubProgram.Export(writer, ShaderType.None, false);
+
+				targetProgram.Export(writer, ShaderType.None, false);
 
 				if (hasVariants)
 				{
