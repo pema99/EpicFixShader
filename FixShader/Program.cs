@@ -147,9 +147,9 @@ namespace FixShader
 				var bunRepl = new BundleReplacerFromMemory(assetsDst.name, assetsDst.name, true, newAssetData, -1);
 				var bunWriter = new AssetsFileWriter(File.OpenWrite(bundlePath + ".new"));
 				bunDst.file.Write(bunWriter, new List<BundleReplacer>() { bunRepl });
-				Console.WriteLine($"Wrote bundle to {bundlePath + ".new"}...");
+				Console.WriteLine($"Wrote bundle to \"{bundlePath + ".new"}\"");
 			}
-			Console.WriteLine("Done.\n");
+			Console.WriteLine("Done.");
 		}
 	}
 }
