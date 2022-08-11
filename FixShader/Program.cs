@@ -35,13 +35,15 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\AppData\LocalLow\VRChat\VRChat\Avatars\LowPoly_Kon_PC (1).vrca";
+			string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Fractal-Explorer-2-v8-Asse.file_56d180cd-00ea-4475-8a72-9533274266a8.177.vrcw";
 			string shaderBundlerPath = @"D:\Projects\UtinyRipper-master\ShaderBundleBuilder\";
-			string unityPath = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
+			string unity2019Path = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
+			string unity2018Path = @"C:\Program Files\2018.4.20f1\Editor\Unity.exe";
+			string unity2017Path = @"C:\Program Files\2017.4.40f1\Editor\Unity.exe";
 			string outPath = shaderBundlerPath + "Assets/BundledAssets/shaderbundle/";
 			string variantsPath = shaderBundlerPath + "Assets/Variants/";
 
-			// Step 0: Setup up folders
+			// Step 0: Setup folders
 			CreateAndClearDirectory(outPath);
 			CreateAndClearDirectory(variantsPath);
 
@@ -76,23 +78,29 @@ namespace FixShader
 				File.WriteAllLines(variantsPath + SimpleShaderExporter.EscapedShaderName(shader) + ".variants", variants.Distinct());
 			}
 
-			// Step 3: Build bundle containing just .shader files
-			var proc = System.Diagnostics.Process.Start(unityPath,
+			// Step 3: Build bundle containing just .shader files, use editor appropriate for bundle
+			var am = new AssetsManager();
+			var bunDst = am.LoadBundleFile(bundlePath);
+			var assetsDst = am.LoadAssetsFileFromBundle(bunDst, 0, false);
+
+			string editorVersion = assetsDst.file.typeTree.unityVersion;
+			string editorPath = unity2017Path;
+			if (editorVersion.StartsWith("2019"))
+				editorPath = unity2019Path;
+			else if (editorVersion.StartsWith("2018"))
+				editorPath = unity2018Path;
+
+			var proc = System.Diagnostics.Process.Start(editorPath,
 				$"-batchmode -projectPath \"{shaderBundlerPath}\" -executeMethod BuildBundle.BuildAllAssetBundles -quit");
 			proc.WaitForExit();
 
 			// Step 4: Replace shaders in the original bundle with shaders from built bundle
 			{
-				var am = new AssetsManager();
-
 				// Get source asset data
 				var bunSrc = am.LoadBundleFile(shaderBundlerPath + "Assets/StreamingAssets/shaderbundle");
 				var assetsSrc = am.LoadAssetsFileFromBundle(bunSrc, 0, false);
 
 				// Load destination asset bundle, replace
-				var bunDst = am.LoadBundleFile(bundlePath);
-				var assetsDst = am.LoadAssetsFileFromBundle(bunDst, 0, false);
-
 				var replacers = new List<AssetsReplacer>();
 				foreach (var shaderInfoSrc in assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader))
 				{

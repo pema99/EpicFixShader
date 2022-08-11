@@ -46,9 +46,9 @@ public class BuildBundle : MonoBehaviour
         {
             string shortPath = Path.Combine("Assets", bundleDirectory, Path.GetFileName(file));
             var importer = AssetImporter.GetAtPath(shortPath);
-            if (importer is ShaderImporter shaderImporter)
+            if (importer is ShaderImporter)
             {
-                shaderImporter.assetBundleName = "shaderbundle";
+                ((ShaderImporter)importer).assetBundleName = "shaderbundle";
                 shaders.Add(AssetDatabase.LoadAssetAtPath<Shader>(shortPath));
             }
         }
