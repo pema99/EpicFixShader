@@ -38,10 +38,8 @@ namespace uTinyRipper.Classes.Shaders
 			Tags.Read(reader);
 		}
 
-		public static SerializedPass shader;
 		public void Export(ShaderWriter writer)
 		{
-			shader = this;
 			writer.WriteIndent(2);
 			writer.Write("{0} ", Type.ToString());
 
@@ -114,8 +112,17 @@ namespace uTinyRipper.Classes.Shaders
 			writer.WriteLine("#pragma vertex vert");
 			writer.WriteIndent(3);
 			writer.WriteLine("#pragma fragment frag");
+
+			// TODO(pema): Only add this for passes where they are needed
+			// Add some default includes
 			writer.WriteIndent(3);
 			writer.WriteLine("#include \"UnityCG.cginc\"");
+			writer.WriteIndent(3);
+			writer.WriteLine("#include \"AutoLight.cginc\"");
+			writer.WriteIndent(3);
+			writer.WriteLine("#include \"UnityLightingCommon.cginc\"");
+			writer.WriteIndent(3);
+			writer.WriteLine("#include \"UnityMetaPass.cginc\"");
 
 			// Force instancing keyword to handle cases where it isn't present.
 			// If we don't do this, the asset bundle building step might strip out the variants we need.
@@ -227,17 +234,19 @@ namespace uTinyRipper.Classes.Shaders
 					writer.WriteIndent(3);
 					writer.Write("#if ");
 
+					var programKeywordDefineChecks = programKeywords.Select(x => $"defined({x})");
+					var excludedKeywordDefineChecks = excludedKeywords.Select(x => $"defined({x})");
 					if (programKeywords.Count > 0 && excludedKeywords.Count > 0)
 					{
-						writer.Write($"({string.Join(" && ", programKeywords)}) && !({string.Join(" || ", excludedKeywords)})");
+						writer.Write($"({string.Join(" && ", programKeywordDefineChecks)}) && !({string.Join(" || ", excludedKeywordDefineChecks)})");
 					}
 					else if (programKeywords.Count > 0)
 					{
-						writer.Write($"({string.Join(" && ", programKeywords)})");
+						writer.Write($"({string.Join(" && ", programKeywordDefineChecks)})");
 					}
 					else if (excludedKeywords.Count > 0)
 					{
-						writer.Write($"!({string.Join(" || ", excludedKeywords)})");
+						writer.Write($"!({string.Join(" || ", excludedKeywordDefineChecks)})");
 					}
 
 					writer.WriteLine();
