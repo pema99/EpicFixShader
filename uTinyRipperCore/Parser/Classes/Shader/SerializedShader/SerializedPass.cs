@@ -111,6 +111,10 @@ namespace uTinyRipper.Classes.Shaders
 			writer.WriteIndent(3);
 			writer.WriteLine("CGPROGRAM");
 			writer.WriteIndent(3);
+			writer.WriteLine("#pragma vertex vert");
+			writer.WriteIndent(3);
+			writer.WriteLine("#pragma fragment frag");
+			writer.WriteIndent(3);
 			writer.WriteLine("#include \"UnityCG.cginc\"");
 
 			// Force instancing keyword to handle cases where it isn't present.
