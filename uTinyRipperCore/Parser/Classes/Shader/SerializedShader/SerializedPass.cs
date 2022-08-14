@@ -260,7 +260,15 @@ namespace uTinyRipper.Classes.Shaders
 					writer.WriteLine("#endif");
 				}
 			}
-			
+
+			// Write a fallback variant, produces a yellow warning color
+			writer.WriteIndent(3); writer.WriteLine("#ifndef STAGE_VERTEX");
+			writer.WriteIndent(3); writer.WriteLine("float4 vert(float4 pos : POSITION) : SV_POSITION { return UnityObjectToClipPos(pos); }");
+			writer.WriteIndent(3); writer.WriteLine("#endif");
+			writer.WriteIndent(3); writer.WriteLine("#ifndef STAGE_FRAGMENT");
+			writer.WriteIndent(3); writer.WriteLine("float4 frag() : SV_TARGET { return float4(1, 1, 0, 1); }");
+			writer.WriteIndent(3); writer.WriteLine("#endif");
+
 			writer.WriteIndent(3);
 			writer.WriteLine("ENDCG");
 		}
