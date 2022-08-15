@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 
 namespace uTinyRipper.Classes.Shaders
@@ -17,39 +18,28 @@ namespace uTinyRipper.Classes.Shaders
 
 		public void Export(TextWriter writer, int index)
 		{
-			if (!SrcBlendValue.IsOne() || !DestBlendValue.IsZero() || !SrcBlendAlphaValue.IsOne() || !DestBlendAlphaValue.IsZero())
+			writer.WriteIndent(3);
+			writer.Write("Blend ");
+			if(index != -1)
 			{
-				writer.WriteIndent(3);
-				writer.Write("Blend ");
-				if(index != -1)
-				{
-					writer.Write("{0} ", index);
-				}
-				writer.Write("{0} {1}", SrcBlendValue, DestBlendValue);
-				if(!SrcBlendAlphaValue.IsOne() || !DestBlendAlphaValue.IsZero())
-				{
-					writer.Write(", {0} {1}", SrcBlendAlphaValue, DestBlendAlphaValue);
-				}
-				writer.Write('\n');
+				writer.Write("{0} ", index);
 			}
+			writer.Write("{0} {1}", SrcBlend.GetPropertyOrValue<BlendFactor>(), DestBlend.GetPropertyOrValue<BlendFactor>());
+			writer.Write(", {0} {1}", SrcBlendAlpha.GetPropertyOrValue<BlendFactor>(), DestBlendAlpha.GetPropertyOrValue<BlendFactor>());
+			writer.Write('\n');
 
-			if(!BlendOpValue.IsAdd() || !BlendOpAlphaValue.IsAdd())
+			writer.WriteIndent(3);
+			writer.Write("BlendOp ");
+			if (index != -1)
 			{
-				writer.WriteIndent(3);
-				writer.Write("BlendOp ");
-				if(index != -1)
-				{
-					writer.Write("{0} ", index);
-				}
-				writer.Write(BlendOpValue.ToString());
-				if (!BlendOpAlphaValue.IsAdd())
-				{
-					writer.Write(", {0}", BlendOpAlphaValue);
-				}
-				writer.Write('\n');
+				writer.Write("{0} ", index);
 			}
-			
-			if(!ColMaskValue.IsRBGA())
+			writer.Write(BlendOp.GetPropertyOrValue<BlendOp>());
+			writer.Write(", {0}", BlendOpAlpha.GetPropertyOrValue<BlendOp>());
+			writer.Write('\n');
+
+			// TODO(pema): Handle colormask
+			if (!ColMaskValue.IsRBGA())
 			{
 				writer.WriteIndent(3);
 				writer.Write("ColorMask ");

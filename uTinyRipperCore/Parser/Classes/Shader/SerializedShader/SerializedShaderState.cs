@@ -76,75 +76,50 @@ namespace uTinyRipper.Classes.Shaders
 			RtBlend6.Export(writer, 6);
 			RtBlend7.Export(writer, 7);
 
+			// TODO(pema): AlphaToMaskValue property
 			if (AlphaToMaskValue)
 			{
 				writer.WriteIndent(3);
 				writer.Write("AlphaToMask On\n");
 			}
 
-			if (!ZClipValue.IsOn())
+			writer.WriteIndent(3);
+			writer.Write("ZClip {0}\n", ZClip.GetPropertyOrValue<ZClip>());
+			writer.WriteIndent(3);
+			writer.Write("ZTest {0}\n", ZTest.GetPropertyOrValue<ZTest>());
+			writer.WriteIndent(3);
+			writer.Write("ZWrite {0}\n", ZWrite.GetPropertyOrValue<ZWrite>());
+			writer.WriteIndent(3);
+			writer.Write("Cull {0}\n", Culling.GetPropertyOrValue<Cull>());
+			writer.WriteIndent(3);
+			writer.Write("Offset {0}, {1}\n", OffsetFactor.GetPropertyOrValue<float>(), OffsetUnits.GetPropertyOrValue<float>());
+
+			//if (!StencilRef.IsZero || !StencilReadMask.IsMax || !StencilWriteMask.IsMax || !StencilOp.IsDefault || !StencilOpFront.IsDefault || !StencilOpBack.IsDefault)
 			{
 				writer.WriteIndent(3);
-				writer.Write("ZClip {0}\n", ZClipValue);
-			}
-			if (!ZTestValue.IsLEqual() && !ZTestValue.IsNone())
-			{
+				writer.Write("Stencil {\n");
+
+				writer.WriteIndent(4);
+				writer.Write("Ref {0}\n", StencilRef.GetPropertyOrValue<float>());
+
+				writer.WriteIndent(4);
+				writer.Write("ReadMask {0}\n", StencilRef.GetPropertyOrValue<float>());
+
+				writer.WriteIndent(4);
+				writer.Write("WriteMask {0}\n", StencilRef.GetPropertyOrValue<float>());
+
+				StencilOp.Export(writer, StencilType.Base);
+
+				StencilOpFront.Export(writer, StencilType.Front);
+
+				StencilOpBack.Export(writer, StencilType.Back);
+
 				writer.WriteIndent(3);
-				writer.Write("ZTest {0}\n", ZTestValue);
-			}
-			if (!ZWriteValue.IsOn())
-			{
-				writer.WriteIndent(3);
-				writer.Write("ZWrite {0}\n", ZWriteValue);
-			}
-			if (!CullingValue.IsBack())
-			{
-				writer.WriteIndent(3);
-				writer.Write("Cull {0}\n", CullingValue);
-			}
-			if (!OffsetFactor.IsZero || !OffsetUnits.IsZero)
-			{
-				writer.WriteIndent(3);
-				writer.Write("Offset {0}, {1}\n", OffsetFactor.Val, OffsetUnits.Val);
+				writer.Write("}\n");
 			}
 
-			// todo: need to find how to link these to properties
-			// if (!StencilRef.IsZero || !StencilReadMask.IsMax || !StencilWriteMask.IsMax || !StencilOp.IsDefault || !StencilOpFront.IsDefault || !StencilOpBack.IsDefault)
-			// {
-			// 	writer.WriteIndent(3);
-			// 	writer.Write("Stencil {\n");
-			// 	if(!StencilRef.IsZero)
-			// 	{
-			// 		writer.WriteIndent(4);
-			// 		writer.Write("Ref {0}\n", StencilRef.Val);
-			// 	}
-			// 	if(!StencilReadMask.IsMax)
-			// 	{
-			// 		writer.WriteIndent(4);
-			// 		writer.Write("ReadMask {0}\n", StencilReadMask.Val);
-			// 	}
-			// 	if(!StencilWriteMask.IsMax)
-			// 	{
-			// 		writer.WriteIndent(4);
-			// 		writer.Write("WriteMask {0}\n", StencilWriteMask.Val);
-			// 	}
-			// 	if(!StencilOp.IsDefault)
-			// 	{
-			// 		StencilOp.Export(writer, StencilType.Base);
-			// 	}
-			// 	if(!StencilOpFront.IsDefault)
-			// 	{
-			// 		StencilOpFront.Export(writer, StencilType.Front);
-			// 	}
-			// 	if(!StencilOpBack.IsDefault)
-			// 	{
-			// 		StencilOpBack.Export(writer, StencilType.Back);
-			// 	}
-			// 	writer.WriteIndent(3);
-			// 	writer.Write("}\n");
-			// }
-			
-			if(!FogMode.IsUnknown() || !FogColor.IsZero || !FogDensity.IsZero || !FogStart.IsZero || !FogEnd.IsZero)
+			// TODO(pema): Fog properties
+			if (!FogMode.IsUnknown() || !FogColor.IsZero || !FogDensity.IsZero || !FogStart.IsZero || !FogEnd.IsZero)
 			{
 				writer.WriteIndent(3);
 				writer.Write("Fog {\n");
