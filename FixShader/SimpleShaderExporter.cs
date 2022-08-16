@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using uTinyRipper;
 using uTinyRipper.Classes;
 using uTinyRipper.Classes.Converters;
@@ -9,9 +12,9 @@ namespace FixShader
 {
 	internal static class SimpleShaderExporter
 	{
-		public static List<Shader> ExportShaders(string bundlePath, string outPath, bool debug = false) => ExportShaders(bundlePath, outPath, (_) => true, debug);
+		public static IEnumerable<Shader> ExportShaders(string bundlePath, string outPath, bool debug = false) => ExportShaders(bundlePath, outPath, (_) => true, debug);
 
-		public static List<Shader> ExportShaders(string bundlePath, string outPath, Func<Shader, bool> filter, bool debug = false)
+		public static IEnumerable<Shader> ExportShaders(string bundlePath, string outPath, Func<Shader, bool> filter, bool debug = false)
 		{
 			GameStructure gs = GameStructure.Load(new List<string>() { bundlePath });
 			var assets = gs.FileCollection.FetchAssets();
@@ -19,9 +22,10 @@ namespace FixShader
 			var container = new SimpleExportContainer();
 			var exporter = new ShaderAssetExporter();
 
-			var exported = new List<Shader>();
+			var exported = new ConcurrentBag<Shader>();
 
-			for (int i = 0; i < shaders.Count; i++)
+			int progress = 0;
+			Parallel.For(0, shaders.Count, i =>
 			{
 				var shader = shaders[i];
 				if (filter(shader))
@@ -33,8 +37,11 @@ namespace FixShader
 				}
 
 				if (debug)
-					Console.WriteLine($"Exported {i + 1}/{shaders.Count} shaders...");
-			}
+				{
+					Console.WriteLine($"Exported {progress + 1}/{shaders.Count} shaders...");
+					Interlocked.Increment(ref progress);
+				}
+			});
 
 			return exported;
 		}

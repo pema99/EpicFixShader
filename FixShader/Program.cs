@@ -13,6 +13,8 @@ using System.IO;
 using uTinyRipper.Classes.Shaders;
 using AssetsTools.NET.Extra;
 using AssetsTools.NET;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 namespace FixShader
 {
@@ -35,7 +37,7 @@ namespace FixShader
 
 		public static void Main()
 		{
-			string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Fractal-Explorer-2-v8-Asse.file_56d180cd-00ea-4475-8a72-9533274266a8.177.vrcw";
+			string bundlePath = @"C:\Users\Pema Malling\Downloads\World-Shader-World-v1-Asset-bund.file_c497e839-81d0-4ff7-8cac-b83344ab3280.41.vrcw";
 			string shaderBundlerPath = @"D:\Projects\UtinyRipper-master\ShaderBundleBuilder\";
 			string unity2019Path = @"C:\Program Files\2019.4.31f1\Editor\Unity.exe";
 			string unity2018Path = @"C:\Program Files\2018.4.20f1\Editor\Unity.exe";
@@ -53,9 +55,10 @@ namespace FixShader
 			Console.WriteLine("=== Step 2/5: Extract and decompile shaders");
 			var exported = SimpleShaderExporter.ExportShaders(bundlePath, outPath, shader =>
 			{
-				if (shader.ValidName.StartsWith("Legacy Shaders/")) return false;
-				if (shader.ValidName.StartsWith("Hidden/")) return false;
-				if (shader.ValidName == "Standard") return false;
+				if (shader.ValidName.StartsWith("Hidden/PostProcessing/")) return false;
+				//if (shader.ValidName.StartsWith("Legacy Shaders/")) return false;
+				//if (shader.ValidName.StartsWith("Hidden/")) return false;
+				//if (shader.ValidName == "Standard") return false;
 				return true;
 			}, true);
 			Console.WriteLine("Done.\n");
@@ -110,27 +113,30 @@ namespace FixShader
 				var bunSrc = am.LoadBundleFile(shaderBundlerPath + "Assets/StreamingAssets/shaderbundle");
 				var assetsSrc = am.LoadAssetsFileFromBundle(bunSrc, 0, false);
 
+				// Build LUT of destination shaders
+				var shaderInfoDstLUT = new Dictionary<string, AssetFileInfoEx>();
+				foreach (var shaderInfoDst in assetsDst.table.GetAssetsOfType((int)AssetClassID.Shader))
+				{
+					var shaderDst = am.GetTypeInstance(assetsDst, shaderInfoDst).GetBaseField();
+					var nameDst = shaderDst.Get("m_ParsedForm").Get("m_Name").GetValue().AsString();
+					shaderInfoDstLUT.Add(nameDst, shaderInfoDst);
+				}
+
 				// Load destination asset bundle, replace
 				var replacers = new List<AssetsReplacer>();
 				var shadersInfosSrc = assetsSrc.table.GetAssetsOfType((int)AssetClassID.Shader);
 				for (int i = 0; i < shadersInfosSrc.Count; i++)
 				{
-					Console.WriteLine($"Processing {i+1}/{shadersInfosSrc.Count} shader...");
+					Console.WriteLine($"Processing {i + 1}/{shadersInfosSrc.Count} shader...");
 					var shaderInfoSrc = shadersInfosSrc[i];
 					var shaderSrc = am.GetTypeInstance(assetsSrc, shaderInfoSrc).GetBaseField();
 					var nameSrc = shaderSrc.Get("m_ParsedForm").Get("m_Name").GetValue().AsString();
 
-					foreach (var shaderInfoDst in assetsDst.table.GetAssetsOfType((int)AssetClassID.Shader))
+					if (shaderInfoDstLUT.TryGetValue(nameSrc, out var shaderInfoDst))
 					{
-						var shaderDst = am.GetTypeInstance(assetsDst, shaderInfoDst).GetBaseField();
-						var nameDst = shaderDst.Get("m_ParsedForm").Get("m_Name").GetValue().AsString();
-
-						if (nameSrc == nameDst)
-						{
-							var shaderBytesSrc = shaderSrc.WriteToByteArray();
-							var repl = new AssetsReplacerFromMemory(0, shaderInfoDst.index, (int)shaderInfoDst.curFileType, 0xffff, shaderBytesSrc);
-							replacers.Add(repl);
-						}
+						var shaderBytesSrc = shaderSrc.WriteToByteArray();
+						var repl = new AssetsReplacerFromMemory(0, shaderInfoDst.index, (int)shaderInfoDst.curFileType, 0xffff, shaderBytesSrc);
+						replacers.Add(repl);
 					}
 				}
 
